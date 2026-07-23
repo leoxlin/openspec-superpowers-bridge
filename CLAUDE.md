@@ -1,33 +1,32 @@
 # CLAUDE.md
 
-> 給 Claude Code 在這個 repo 工作時的脈絡指引。維持繁體中文書寫。
+> Contextual guidance for Claude Code when working in this repository. Write in English.
 >
-> 關於這個 repo「是什麼、為什麼存在、有哪些 bridges」 → 看 [README.md](./README.md)(英文)或 [README.zh-TW.md](./README.zh-TW.md)(繁中)。
-> 本檔聚焦 Claude 在這個 repo 工作時需要知道的**慣例與紅旗**。
+> For what this repository is, why it exists, and which bridges it contains, see [README.md](./README.md).
+> This file focuses on the **conventions and red flags** Claude needs to know when working in this repository.
 
 ---
 
-## 結構約定
+## Structure Conventions
 
 ```
-openspec-schemas/                     ← 本 repo
-├── README.md                         ← 英文,GitHub 預設 render
-├── README.zh-TW.md                   ← 繁中,有切換連結
-├── CLAUDE.md                         ← 你正在讀的(繁中,給 Claude 看)
+openspec-schemas/                     ← this repository
+├── README.md                         ← English, rendered by default on GitHub
+├── CLAUDE.md                         ← the file you are reading
 ├── LICENSE                           ← MIT
 ├── .gitignore
 ├── .github/workflows/
-│   ├── validate-schemas.yml          ← CI 對每個 bridge 跑 openspec schema validate
-│   └── version-check.yml             ← 每週驗證 upstream OpenSpec / Superpowers,落後就開 issue
+│   ├── validate-schemas.yml          ← CI runs openspec schema validate for each bridge
+│   └── version-check.yml             ← checks upstream OpenSpec / Superpowers weekly and opens an issue when behind
 ├── docs/
-│   ├── roadmap.md / .zh-TW.md        ← 公開 roadmap
+│   ├── roadmap.md                    ← public roadmap
 │   └── superpowers/
-│       ├── specs/                    ← 設計 spec(brainstorming 產出)
-│       └── plans/                    ← 實作 plan(writing-plans 產出)
-└── superpowers-bridge/                ← 第一個 bridge,自包式 schema bundle
-    ├── README.md / .zh-TW.md         ← 完整 bridge 文件(含 install + integration runbook)
-    ├── schema.yaml                   ← OpenSpec 讀的 schema 定義
-    └── templates/                    ← artifact 模板
+│       ├── specs/                    ← design specs (brainstorming output)
+│       └── plans/                    ← implementation plans (writing-plans output)
+└── superpowers-bridge/               ← first bridge, a self-contained schema bundle
+    ├── README.md                     ← complete bridge documentation (including install and integration runbook)
+    ├── schema.yaml                   ← schema definition read by OpenSpec
+    └── templates/                    ← artifact templates
         ├── brainstorm.md
         ├── proposal.md
         ├── design.md
@@ -38,34 +37,30 @@ openspec-schemas/                     ← 本 repo
         └── retrospective.md
 ```
 
-未來新增 bridge:在 repo 根加一個 `<new-bridge>/` 子目錄,內含與 `superpowers-bridge/` 相同結構。CI matrix 在 `.github/workflows/validate-schemas.yml` 的 `matrix.bridge` 加一行即可。
+To add a bridge in the future, create a `<new-bridge>/` subdirectory at the repository root with the same structure as `superpowers-bridge/`. Add one line to `matrix.bridge` in `.github/workflows/validate-schemas.yml`.
 
-## 命名約定
+## Naming Conventions
 
-- **Repo / 目錄 / schema name**:lowercase + hyphen + 對的單複數
-  - repo:`openspec-schemas`(複數,可長多個 bridge)
-  - bridge dir / schema name:`superpowers-bridge`(單數)
-  - 不用 PascalCase(雖然 OpenSpec 自身 repo 用 `OpenSpec`,但他們的 CLI / npm package 都是 lowercase,我們對齊功能性命名)
-- **Locale 編碼**:用 `zh-TW`(繁中)、`zh-CN`(簡中);避免裸寫 `zh`
+- **Repository / directory / schema name**: lowercase + hyphens + correct singular or plural form
+  - repository: `openspec-schemas` (plural, because it can contain multiple bridges)
+  - bridge directory / schema name: `superpowers-bridge` (singular)
+  - Do not use PascalCase. Although OpenSpec's own repository uses `OpenSpec`, its CLI and npm package are lowercase, so functional names follow that convention.
+## Language Strategy
 
-## 雙語策略
-
-| 檔案類型 | 語言 |
+| File type | Language |
 |---------|------|
-| 入口 `README.md` | 英文 canonical + `README.zh-TW.md` 翻譯 + 頂端切換連結 |
-| `CLAUDE.md`(這份) | 繁中(給維護者 + Claude;國際讀者從 README 入口進來) |
-| `docs/roadmap.md` | 英文 canonical + `.zh-TW.md` 翻譯 + 切換連結 |
-| `superpowers-bridge/README.md` | 英文 canonical + `.zh-TW.md` 翻譯 + 切換連結 |
-| `schema.yaml`、`templates/*.md` | 英文(機器讀 + 國際讀者) |
-| Commit message | 英文(國際慣例) |
-| Code comment | 英文 |
+| Entry-point `README.md` | English canonical |
+| `CLAUDE.md` (this file) | English |
+| `docs/roadmap.md` | English canonical |
+| `superpowers-bridge/README.md` | English canonical |
+| `schema.yaml`, `templates/*.md` | English (machine-readable and accessible to international readers) |
+| Commit messages | English |
+| Code comments | English |
 
-**翻譯同步原則**:英文 canonical,翻譯版可能滯後。修改英文版時若 schema / 工作流發生實質變動,要同步更新繁中版。小改動允許先英文後繁中。
+## Schema Modification Workflow
 
-## Schema 修改流程
-
-1. 編輯 `<bridge>/schema.yaml` 或 `<bridge>/templates/*.md`
-2. 本地驗證:
+1. Edit `<bridge>/schema.yaml` or `<bridge>/templates/*.md`.
+2. Validate locally:
    ```bash
    mkdir -p /tmp/test-project/openspec/schemas
    cp -R <bridge>/ /tmp/test-project/openspec/schemas/
@@ -73,32 +68,32 @@ openspec-schemas/                     ← 本 repo
    openspec schema validate <bridge-name>
    openspec schemas
    ```
-3. 若有時序錯位 / 錯誤行為更動,**也要同步更新 `superpowers-bridge/README.md` 的「六個值得記住的設計觸點」段**(尤其是 verify/retrospective 時序錯位那段),並同步繁中版。
-4. Commit message 用英文,符合 conventional commits(`feat:`、`fix:`、`refactor:`、`chore:`、`docs:`、`ci:`)
-5. push 觸發 CI
+3. If timing mismatches or error behavior change, **also update the "Six design touchpoints worth remembering" section in `superpowers-bridge/README.md`**, especially the verify/retrospective timing-mismatch subsection.
+4. Write commit messages in English and follow Conventional Commits (`feat:`, `fix:`, `refactor:`, `chore:`, `docs:`, `ci:`).
+5. Push to trigger CI.
 
-## 三個 alfred-openspec 顧慮的應對(內化記憶)
+## Responses to the Three alfred-openspec Concerns
 
-PR #970 review 提出三個顧慮,本 schema 在 v1 已具體應對。Claude 在這個 repo 修任何 schema 行為前都要記住:
+The PR #970 review raised three concerns, each addressed concretely in schema v1. Claude must remember them before changing any schema behavior in this repository:
 
-| 顧慮 | 應對 |
+| Concern | Response |
 |------|------|
-| #3 主動 commit 使用者 git | **完全移除**。Step 0 改為 skill PRECHECK,只驗 skill 不動 git |
-| #1 與 Superpowers 強耦合無 capability detection | **Layer 1**:每個 invoke skill 的 instruction 開頭跑 PRECHECK,缺失就 STOP。**Layer 2**:對 verify / retrospective 加 evidence-based PRECHECK(`git log`、`grep` 檢查可觀察狀態) |
-| #2 verify 時序錯位(以及 retrospective 同型) | 已知限制,在 bridge README 的「設計觸點 #6」文件化。完整修法等 OpenSpec 引擎引入 `post_apply` phase。Layer 2 evidence-based PRECHECK 是當前緩解 |
+| #3 Proactively committing to the user's Git repository | **Removed entirely.** Step 0 became a skill PRECHECK that validates skills without modifying Git. |
+| #1 Tight coupling to Superpowers without capability detection | **Layer 1**: begin every skill-invoking instruction with a PRECHECK and STOP when the skill is unavailable. **Layer 2**: add evidence-based PRECHECKs to verify / retrospective (`git log` and `grep` inspect observable state). |
+| #2 Verify timing mismatch (and the same issue for retrospective) | Known limitation documented in bridge README design touchpoint #6. The complete fix requires the OpenSpec engine to introduce a `post_apply` phase. The Layer 2 evidence-based PRECHECK is the current mitigation. |
 
-**修 schema 時的紅旗** —— 以下行為**不要做**(會反 PR #970 的應對):
+**Red flags when modifying the schema** — **do not** do the following, because they would undo the responses to PR #970:
 
-- ❌ 在 instruction 寫「主動 git add / git commit」
-- ❌ 拿掉某個 PRECHECK 但沒換更強的替代品
-- ❌ 把 verify / retrospective 從 artifact 拉掉但沒在 README「設計觸點」段同步更新限制
-- ❌ 改 schema name 但沒同步改 bridge 內所有文件 + 頂層 README 的 bridge 索引
+- ❌ Add instructions to proactively run `git add` or `git commit`.
+- ❌ Remove a PRECHECK without replacing it with a stronger alternative.
+- ❌ Remove verify / retrospective as artifacts without updating the limitation in the README design-touchpoint section.
+- ❌ Change the schema name without synchronizing all bridge documentation and the bridge index in the top-level README.
 
-## 相關連結
+## Related Links
 
-- 設計 spec:[`docs/superpowers/specs/2026-05-02-openspec-schemas-monorepo-design.md`](./docs/superpowers/specs/2026-05-02-openspec-schemas-monorepo-design.md)
-- 實作 plan:[`docs/superpowers/plans/2026-05-02-phase-1-implementation.md`](./docs/superpowers/plans/2026-05-02-phase-1-implementation.md)
-- PR #970 review:<https://github.com/Fission-AI/OpenSpec/pull/970>
-- 既有 spec-kit superpowers bridges 參考:
+- Design spec: [`docs/superpowers/specs/2026-05-02-openspec-schemas-monorepo-design.md`](./docs/superpowers/specs/2026-05-02-openspec-schemas-monorepo-design.md)
+- Implementation plan: [`docs/superpowers/plans/2026-05-02-phase-1-implementation.md`](./docs/superpowers/plans/2026-05-02-phase-1-implementation.md)
+- PR #970 review: <https://github.com/Fission-AI/OpenSpec/pull/970>
+- Existing spec-kit Superpowers bridge references:
   - [RbBtSn0w/spec-kit-extensions/superpowers-bridge](https://github.com/RbBtSn0w/spec-kit-extensions/tree/main/superpowers-bridge)
   - [WangX0111/superspec](https://github.com/WangX0111/superspec)
